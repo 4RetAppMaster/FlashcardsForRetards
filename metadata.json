@@ -1,0 +1,6 @@
+{
+  "name": "Flashcards",
+  "description": "A versatile flashcard player that imports CSV and XLSX dictionaries, featuring multiple reveal modes, shuffle navigation, and persistent card decks.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

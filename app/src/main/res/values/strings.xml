@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Flashcards</string>
+    <string name="action_load">Load</string>
+    <string name="action_how_it_works">How it works?</string>
+    <string name="loaded_decks_header">Loaded Decks</string>
+    <string name="empty_decks_message">No decks loaded yet.</string>
+    <string name="action_delete_deck">Delete deck</string>
+    <string name="empty_card_prompt">Tap here to load your flashcards!</string>
+    <string name="mode_a">A</string>
+    <string name="mode_b">B</string>
+    <string name="mode_mix">Mix</string>
+    <string name="action_previous">Previous</string>
+    <string name="action_flip">Flip</string>
+    <string name="action_next">Next</string>
+    <string name="help_dialog_title">How It Works</string>
+    <string name="help_usage_title">Quick Guide</string>
+    <string name="help_usage_body">• Swipe right → Load (or tap empty card) to import .csv / .xlsx files.\n• Pick A, B, or Mix mode. Tap the card or ↻ to flip, and ← / → to navigate.</string>
+    <string name="help_format_title">File Format (CSV / XLSX)</string>
+    <string name="help_format_cols">Col A: Side A\nCol B: Side A note in () — optional\nCol C: Side B\nCol D: Side B note in () — optional</string>
+    <string name="help_format_note">Empty B/D cells omit (). 2-column A/B files also work.</string>
+    <string name="help_format_example">Example: 食べる | たべる | to eat | verb\nShows: 食べる (たべる)  ↔  to eat (verb)</string>
+    <string name="help_dialog_confirm">Got it</string>
+    <string name="error_parse_file">Failed to parse file: %1$s. Make sure it is a valid .csv or .xlsx file.</string>
+    <string name="error_reading_file">Error reading file: %1$s</string>
+</resources>
