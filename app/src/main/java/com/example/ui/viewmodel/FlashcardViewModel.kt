@@ -36,6 +36,11 @@ class FlashcardViewModel(application: Application) : AndroidViewModel(applicatio
     private val _activeCards = MutableStateFlow<List<Flashcard>>(emptyList())
     val activeCards = _activeCards.asStateFlow()
 
+    private var originalCards: List<Flashcard> = emptyList()
+
+    private val _isShuffled = MutableStateFlow(false)
+    val isShuffled = _isShuffled.asStateFlow()
+
     private val _currentIndex = MutableStateFlow(0)
     val currentIndex = _currentIndex.asStateFlow()
 
@@ -90,10 +95,12 @@ class FlashcardViewModel(application: Application) : AndroidViewModel(applicatio
 
     private fun loadCardsForDeck(deckId: String) {
         viewModelScope.launch {
-            val shuffled = withContext(Dispatchers.IO) {
-                repository.getCardsForDeck(deckId).shuffled()
+            val cards = withContext(Dispatchers.IO) {
+                repository.getCardsForDeck(deckId)
             }
-            _activeCards.value = shuffled
+            originalCards = cards
+            _isShuffled.value = false
+            _activeCards.value = cards
             _currentIndex.value = 0
             resetInitialSide()
         }
@@ -141,6 +148,36 @@ class FlashcardViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    fun toggleShuffle() {
+        if (originalCards.size <= 1) return
+        if (_isShuffled.value) {
+            _isShuffled.value = false
+            _activeCards.value = originalCards
+            _currentIndex.value = 0
+            resetInitialSide()
+            return
+        }
+        viewModelScope.launch {
+            val base = originalCards
+            val shuffled = withContext(Dispatchers.Default) {
+                var next = base.shuffled()
+                var attempts = 0
+                while (next == base && attempts < 5) {
+                    next = base.shuffled()
+                    attempts++
+                }
+                if (next == base) {
+                    next = base.reversed()
+                }
+                next
+            }
+            _isShuffled.value = true
+            _activeCards.value = shuffled
+            _currentIndex.value = 0
+            resetInitialSide()
+        }
+    }
+
     fun deleteDeck(deckId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -148,6 +185,8 @@ class FlashcardViewModel(application: Application) : AndroidViewModel(applicatio
             }
             if (_activeDeck.value?.id == deckId) {
                 _activeDeck.value = null
+                originalCards = emptyList()
+                _isShuffled.value = false
                 _activeCards.value = emptyList()
                 _currentIndex.value = 0
                 _showingSide.value = 0

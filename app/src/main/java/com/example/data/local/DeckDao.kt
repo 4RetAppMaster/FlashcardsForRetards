@@ -10,7 +10,7 @@ interface DeckDao {
     @Query("SELECT * FROM decks ORDER BY dateImported DESC")
     fun getAllDecks(): Flow<List<Deck>>
 
-    @Query("SELECT * FROM flashcards WHERE deckId = :deckId")
+    @Query("SELECT * FROM flashcards WHERE deckId = :deckId ORDER BY id ASC")
     suspend fun getCardsForDeck(deckId: String): List<Flashcard>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

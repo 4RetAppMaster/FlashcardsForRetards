@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -68,6 +69,7 @@ fun FlashcardScreen(
     val decks by viewModel.allDecks.collectAsStateWithLifecycle()
     val activeDeck by viewModel.activeDeck.collectAsStateWithLifecycle()
     val activeCards by viewModel.activeCards.collectAsStateWithLifecycle()
+    val isShuffled by viewModel.isShuffled.collectAsStateWithLifecycle()
     val currentIndex by viewModel.currentIndex.collectAsStateWithLifecycle()
     val showingSide by viewModel.showingSide.collectAsStateWithLifecycle()
     val startMode by viewModel.startMode.collectAsStateWithLifecycle()
@@ -135,7 +137,9 @@ fun FlashcardScreen(
                 FlashcardTopBar(
                     activeDeckName = activeDeck?.name,
                     cardPositionText = cardPositionText,
-                    onOpenDrawer = { coroutineScope.launch { drawerState.open() } }
+                    isShuffled = isShuffled,
+                    onOpenDrawer = { coroutineScope.launch { drawerState.open() } },
+                    onToggleShuffle = viewModel::toggleShuffle
                 )
             },
             containerColor = DarkBackground,
@@ -371,7 +375,9 @@ private fun DrawerActionButton(
 private fun FlashcardTopBar(
     activeDeckName: String?,
     cardPositionText: String?,
-    onOpenDrawer: () -> Unit
+    isShuffled: Boolean,
+    onOpenDrawer: () -> Unit,
+    onToggleShuffle: () -> Unit
 ) {
     Surface(
         color = HeaderGreenSurface,
@@ -420,20 +426,43 @@ private fun FlashcardTopBar(
                 }
 
                 if (cardPositionText != null) {
-                    Box(
+                    Row(
                         modifier = Modifier
+                            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
                             .clip(RoundedCornerShape(50))
-                            .background(SemiDarkGreen.copy(alpha = 0.28f))
-                            .border(1.dp, SemiDarkGreen, RoundedCornerShape(50))
-                            .padding(horizontal = 12.dp, vertical = 5.dp)
-                            .testTag("card_counter")
+                            .clickable(
+                                onClickLabel = stringResource(R.string.action_shuffle_cards),
+                                onClick = onToggleShuffle
+                            )
+                            .testTag("card_counter"),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = cardPositionText,
-                            color = SoftMint,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        if (isShuffled) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_shuffle),
+                                contentDescription = stringResource(R.string.action_shuffle_cards),
+                                tint = SoftMint,
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .testTag("icon_shuffle")
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(50))
+                                .background(SemiDarkGreen.copy(alpha = 0.28f))
+                                .border(1.dp, SemiDarkGreen, RoundedCornerShape(50))
+                                .padding(horizontal = 12.dp, vertical = 5.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = cardPositionText,
+                                color = SoftMint,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                 }
             }
@@ -507,7 +536,11 @@ private fun FlashcardBox(
 ) {
     Card(
         modifier = modifier
-            .clickable(onClick = onClick)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
             .testTag("flashcard_clickable"),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = NeutralCardBackground),
