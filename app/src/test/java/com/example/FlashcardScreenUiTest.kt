@@ -25,13 +25,7 @@ class FlashcardScreenUiTest {
     fun verify_drawer_and_quick_guide_visibility() {
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithTag("btn_header_help").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("btn_header_help").performClick()
-        composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Quick Guide").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Got it").performClick()
-        composeTestRule.waitForIdle()
-
+        composeTestRule.onNodeWithTag("btn_header_help").assertDoesNotExist()
         composeTestRule.onNodeWithTag("header_open_drawer").performClick()
         composeTestRule.waitForIdle()
 
@@ -40,7 +34,6 @@ class FlashcardScreenUiTest {
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText("How It Works").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Quick Guide").assertIsDisplayed()
         composeTestRule.onNodeWithText("File Format (CSV / XLSX)").assertIsDisplayed()
     }
 

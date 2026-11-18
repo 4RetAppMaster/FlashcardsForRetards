@@ -135,8 +135,7 @@ fun FlashcardScreen(
                 FlashcardTopBar(
                     activeDeckName = activeDeck?.name,
                     cardPositionText = cardPositionText,
-                    onOpenDrawer = { coroutineScope.launch { drawerState.open() } },
-                    onOpenHelp = { showHelpDialog = true }
+                    onOpenDrawer = { coroutineScope.launch { drawerState.open() } }
                 )
             },
             containerColor = DarkBackground,
@@ -212,7 +211,7 @@ private fun FlashcardDrawerSheet(
                     Text(
                         text = stringResource(R.string.app_name),
                         color = Color.White,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -372,8 +371,7 @@ private fun DrawerActionButton(
 private fun FlashcardTopBar(
     activeDeckName: String?,
     cardPositionText: String?,
-    onOpenDrawer: () -> Unit,
-    onOpenHelp: () -> Unit
+    onOpenDrawer: () -> Unit
 ) {
     Surface(
         color = HeaderGreenSurface,
@@ -384,7 +382,7 @@ private fun FlashcardTopBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp)
-                    .padding(start = 16.dp, end = 8.dp),
+                    .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
@@ -402,7 +400,7 @@ private fun FlashcardTopBar(
                         Text(
                             text = stringResource(R.string.app_name),
                             color = Color.White,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -424,7 +422,6 @@ private fun FlashcardTopBar(
                 if (cardPositionText != null) {
                     Box(
                         modifier = Modifier
-                            .padding(end = 4.dp)
                             .clip(RoundedCornerShape(50))
                             .background(SemiDarkGreen.copy(alpha = 0.28f))
                             .border(1.dp, SemiDarkGreen, RoundedCornerShape(50))
@@ -438,18 +435,6 @@ private fun FlashcardTopBar(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-                }
-
-                IconButton(
-                    onClick = onOpenHelp,
-                    modifier = Modifier.testTag("btn_header_help")
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_help_outline),
-                        contentDescription = stringResource(R.string.action_how_it_works),
-                        tint = SoftMint,
-                        modifier = Modifier.size(24.dp)
-                    )
                 }
             }
             HorizontalDivider(
@@ -646,20 +631,12 @@ private fun HelpDialog(onDismiss: () -> Unit) {
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(
-                        text = stringResource(R.string.help_usage_title),
-                        color = SoftMint,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.help_usage_body),
-                        color = Color.White.copy(alpha = 0.9f),
-                        fontSize = 13.sp,
-                        lineHeight = 19.sp
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.help_usage_body),
+                    color = Color.White.copy(alpha = 0.9f),
+                    fontSize = 13.sp,
+                    lineHeight = 19.sp
+                )
 
                 Column(
                     modifier = Modifier
@@ -681,11 +658,6 @@ private fun HelpDialog(onDismiss: () -> Unit) {
                         color = Color.White,
                         fontSize = 13.sp,
                         lineHeight = 19.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.help_format_note),
-                        color = MutedText,
-                        fontSize = 12.sp
                     )
                     HorizontalDivider(
                         thickness = 1.dp,
